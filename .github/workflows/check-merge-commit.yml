@@ -1,0 +1,44 @@
+name: Check merge commit 
+
+on: 
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: 
+      - master
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+    
+    # GITHUB_SHA: last merge commit on the `GITHUB_REF` branch
+    # GITHUB_REF: PR merge branch (example: `refs/pull/:prNumber/merge`)
+    #     
+    # https://help.github.com/en/actions/automating-your-workflow-with-github-actions/events-that-trigger-workflows#pull-request-event-pull_request
+    # https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/checking-out-pull-requests-locally
+    - name: Print GITHUB_SHA and GITHUB_REF
+      run: |
+        echo $GITHUB_SHA
+        echo $GITHUB_REF
+  
+    # https://help.github.com/en/actions/automating-your-workflow-with-github-actions/contexts-and-expression-syntax-for-github-actions#github-context
+    - name: Dump github.event
+      env:
+        GITHUB_EVENT: ${{ toJson(github.event) }}
+
+    # https://github.com/actions/github-script/tree/0.4.0
+    # https://octokit.github.io/rest.js/#octokit-routes-pulls-get
+    - uses: actions/github-script@0.4.0
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const number = context.payload.number
+          const result = await github.pulls.get({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: number
+          })
+          
+          // What's the value of merge_commit_sha?
+          console.log(result)
+          
