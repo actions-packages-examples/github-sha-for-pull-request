@@ -12,8 +12,8 @@ jobs:
 
     - name: Display github.event.pull_request.head_sha and github.event.pull_request.merge_commit_sha
       env:
-        PR_HEAD_SHA: ${{ github.event.pull_request.head_sha }}
-        PR_MERGE_COMMIT_SHA: ${{ github.event.pull_request.merge_commit_sha }}
+        PR_HEAD_SHA: ${{ toJson(github.event.pull_request.head_sha) }}
+        PR_MERGE_COMMIT_SHA: ${{ toJson(github.event.pull_request.merge_commit_sha) }}
       run: |
         echo "The pull request's HEAD SHA is $PR_HEAD_SHA"
         echo "The pull request's merge commit SHA is $PR_MERGE_COMMIT_SHA"
