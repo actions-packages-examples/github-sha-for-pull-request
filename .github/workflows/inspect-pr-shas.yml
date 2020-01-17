@@ -1,0 +1,19 @@
+name: Inspect PR SHAs
+
+on: pull_request
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Display GITHUB_SHA as defined by Actions
+      run: echo $GITHUB_SHA
+
+    - name: Display github.event.pull_request.head_sha and github.event.pull_request.merge_commit_sha
+      env:
+        PR_HEAD_SHA: ${{ github.event.pull_request.head_sha }}
+        PR_MERGE_COMMIT_SHA: ${{ github.event.pull_request.merge_commit_sha }}
+      run: |
+        echo "The pull request's HEAD SHA is $PR_HEAD_SHA"
+        echo "The pull request's merge commit SHA is $PR_MERGE_COMMIT_SHA"
